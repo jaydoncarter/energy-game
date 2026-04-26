@@ -123,15 +123,86 @@ const getCapFactor = (type, elapsed, batteries) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   GLOBAL STYLES (injected once on mount)
+   GLOBAL STYLES (injected once on mount) – all design tokens as CSS variables
    ═══════════════════════════════════════════════════════════════ */
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Share+Tech+Mono&display=swap');
 
+  :root {
+    /* Backgrounds */
+    --bg-body: #060b16;
+    --bg-panel: rgba(10, 18, 35, 0.97);
+    --bg-card: rgba(10, 18, 35, 0.85);
+    --bg-card-hover: rgba(20, 30, 55, 0.9);
+    --bg-header: rgba(6, 11, 22, 0.98);
+    --bg-progress: #0e1525;
+    --bg-tab-active: rgba(30, 58, 95, 0.5);
+    --bg-tab-inactive: transparent;
+    --bg-queue: rgba(14, 21, 37, 0.7);
+    --bg-warning: rgba(239, 68, 68, 0.1);
+    --bg-plant-item: rgba(14, 21, 37, 0.6);
+
+    /* Borders */
+    --border-default: rgba(30, 58, 95, 0.65);
+    --border-light: rgba(30, 58, 95, 0.45);
+    --border-lighter: rgba(30, 58, 95, 0.4);
+    --border-tab: rgba(30, 58, 95, 0.4);
+    --border-warning: rgba(239, 68, 68, 0.25);
+
+    /* Text colors */
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-dim: #475569;
+    --text-dark: #334155;
+    --text-accent-blue: #3b82f6;
+    --text-success: #22c55e;
+    --text-warning: #fbbf24;
+    --text-danger: #ef4444;
+    --text-info: #7dd3fc;
+
+    /* Status / Accent */
+    --color-success: #22c55e;
+    --color-warning: #fbbf24;
+    --color-danger: #ef4444;
+    --color-info: #3b82f6;
+
+    /* Font sizes */
+    --font-xxs: 9px;        /* was 7.5px */
+--font-xxs2: 9.5px;     /* was 8px   */
+--font-xs: 10.5px;      /* was 9px   */
+--font-xs2: 11px;       /* was 9.5px */
+--font-sm: 12px;        /* was 10px  */
+--font-sm2: 13px;       /* was 11px  */
+--font-base: 14px;      /* was 12px  */
+--font-md: 15.5px;      /* was 13px  */
+--font-lg: 16.5px;      /* was 14px  */
+--font-xl: 17.5px;      /* was 15px  */
+--font-2xl: 25px;       /* was 22px  */
+
+/* Responsive clamps – raise both min and max */
+--font-3xl:   clamp(3rem, 10vw, 6rem);    /* was 2.4rem, 8vw, 5rem */
+--font-heading: clamp(2rem, 6vw, 3.8rem); /* was 1.6rem, 5vw, 3rem */
+--font-grade:  clamp(4rem, 14vw, 8rem);   /* was 3.5rem, 12vw, 7rem */
+
+    /* Spacing / Layout */
+    --border-radius-sm: 2px;
+    --border-radius: 4px;
+    --border-radius-md: 6px;
+    --panel-padding: 10px;
+    --card-padding: 10px 12px;
+
+    /* Shadows */
+    --glow-green: 0 0 12px #22c55e, 0 0 24px #22c55e44;
+    --glow-red: 0 0 14px #ef4444, 0 0 28px #ef444444;
+    --glow-success: 0 0 32px rgba(34,197,94,0.38);
+  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body, #root { height: 100%; }
   body {
-    background: #060b16; color: #e2e8f0;
+    background: var(--bg-body);
+    color: var(--text-primary);
     font-family: 'Exo 2', system-ui, sans-serif;
     overflow: hidden;
   }
@@ -140,39 +211,50 @@ const CSS = `
   /* Scrollbar */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: var(--border-radius-sm); }
 
   /* Panel */
   .panel {
-    background: rgba(10, 18, 35, 0.97);
-    border: 1px solid rgba(30, 58, 95, 0.65);
-    border-radius: 6px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-default);
+    border-radius: var(--border-radius-md);
   }
   .panel-title {
-    font-size: 9.5px; letter-spacing: 2.5px; text-transform: uppercase;
-    color: #3b82f6; padding: 8px 12px 7px;
-    border-bottom: 1px solid rgba(30, 58, 95, 0.45);
+    font-size: var(--font-xs2);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-info);
+    padding: 8px 12px 7px;
+    border-bottom: 1px solid var(--border-light);
   }
 
   /* Shop card */
   .shop-card {
-    border-radius: 6px; padding: 10px 12px;
-    background: rgba(10, 18, 35, 0.85);
-    border: 1px solid rgba(30, 58, 95, 0.5);
+    border-radius: var(--border-radius-md);
+    padding: var(--card-padding);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
     transition: border-color 0.2s, background 0.2s;
   }
   .shop-card:not(.card-disabled):hover {
     border-color: rgba(59, 130, 246, 0.45);
-    background: rgba(20, 30, 55, 0.9);
+    background: var(--bg-card-hover);
   }
   .card-disabled { opacity: 0.45; }
 
   /* Buy button */
   .buy-btn {
-    border: none; border-radius: 4px; cursor: pointer;
-    font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 10.5px;
-    letter-spacing: 0.8px; text-transform: uppercase;
-    padding: 5px 13px; white-space: nowrap; transition: all 0.15s;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    font-size: var(--font-sm2);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 5px 13px;
+    white-space: nowrap;
+    transition: all 0.15s;
   }
   .buy-btn:hover:not(:disabled) { filter: brightness(1.25); transform: scale(1.04); }
   .buy-btn:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -181,8 +263,8 @@ const CSS = `
   .bar-fill   { transition: width 0.35s ease; }
   .timer-bar  { transition: width 0.25s linear; }
   .pulse      { animation: pulse  1.6s ease-in-out infinite; }
-  .glow-green { text-shadow: 0 0 12px #22c55e, 0 0 24px #22c55e44; }
-  .glow-red   { text-shadow: 0 0 14px #ef4444, 0 0 28px #ef444444; }
+  .glow-green { text-shadow: var(--glow-green); }
+  .glow-red   { text-shadow: var(--glow-red); }
 
   @keyframes pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
   @keyframes pop   { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
@@ -192,7 +274,7 @@ const CSS = `
   .game-main { display: flex; overflow: hidden; flex: 1; min-height: 0; }
   .left-panel {
     width: 255px; flex-shrink: 0;
-    border-right: 1px solid rgba(30,58,95,0.4);
+    border-right: 1px solid var(--border-lighter);
     display: flex; flex-direction: column; overflow: hidden;
   }
   .right-panel { flex: 1; overflow: hidden; }
@@ -202,13 +284,13 @@ const CSS = `
     body { overflow: auto; }
     html, body, #root { height: auto; }
     .game-main   { flex-direction: column; overflow: visible; flex: none; }
-    .left-panel  { width: 100%; border-right: none; border-bottom: 1px solid rgba(30,58,95,0.4); max-height: 60vh; overflow: hidden; }
+    .left-panel  { width: 100%; border-right: none; border-bottom: 1px solid var(--border-lighter); max-height: 60vh; overflow: hidden; }
     .right-panel { overflow: visible; }
-    .game-container {            /* the root div from GameBoard */
-    height: auto !important;
-    min-height: 100vh;
-    overflow: visible !important;
-  }
+    .game-container {
+      height: auto !important;
+      min-height: 100vh;
+      overflow: visible !important;
+    }
     .mobile-tabs { display: flex; }
     .desktop-header-stats { gap: 10px !important; }
   }
@@ -350,31 +432,31 @@ function IntroScreen({ onStart }) {
     <div style={{
       minHeight: "100vh", display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", padding: "28px 20px",
-      textAlign: "center", background: "#060b16",
+      textAlign: "center", background: "var(--bg-body)",
       backgroundImage: "radial-gradient(ellipse at 50% 25%, rgba(0,80,180,0.13) 0%, transparent 65%)",
     }}>
-      <div className="mono" style={{ fontSize: "10px", letterSpacing: "4px", color: "#3b82f6", marginBottom: "14px" }}>
+      <div className="mono" style={{ fontSize: "var(--font-sm)", letterSpacing: "4px", color: "var(--color-info)", marginBottom: "14px" }}>
         ENERGY &amp; SOCIETY // INTERACTIVE SIMULATION
       </div>
-      <h1 style={{ fontSize: "clamp(2.4rem, 8vw, 5rem)", fontWeight: 800, color: "#fff", marginBottom: "8px", letterSpacing: "-1px", lineHeight: 1 }}>
+      <h1 style={{ fontSize: "var(--font-3xl)", fontWeight: 800, color: "#fff", marginBottom: "8px", letterSpacing: "-1px", lineHeight: 1 }}>
         ⚡ GRID OPERATOR
       </h1>
-      <p style={{ color: "#64748b", fontSize: "clamp(13px, 2.5vw, 15px)", maxWidth: "560px", lineHeight: 1.75, marginBottom: "32px" }}>
-        You have <span style={{ color: "#fbbf24", fontWeight: 700 }}>10 minutes</span> to build an
+      <p style={{ color: "var(--text-muted)", fontSize: "clamp(13px, 2.5vw, 15px)", maxWidth: "560px", lineHeight: 1.75, marginBottom: "32px" }}>
+        You have <span style={{ color: "var(--text-warning)", fontWeight: 700 }}>10 minutes</span> to build an
         energy grid. Balance production volume, revenue, and environmental impact to maximize your{" "}
-        <span style={{ color: "#22c55e", fontWeight: 700 }}>Energy Score</span>.
+        <span style={{ color: "var(--text-success)", fontWeight: 700 }}>Energy Score</span>.
       </p>
 
       {/* Score formula panel */}
       <div className="panel" style={{ maxWidth: "480px", width: "100%", marginBottom: "16px" }}>
         <div className="panel-title">Score Formula</div>
         <div style={{ padding: "14px 18px", textAlign: "center" }}>
-          <div className="mono" style={{ fontSize: "15px", color: "#e2e8f0", marginBottom: "8px" }}>
-            <span style={{ color: "#22c55e" }}>Clean Energy × 2</span>
+          <div className="mono" style={{ fontSize: "var(--font-xl)", color: "var(--text-primary)", marginBottom: "8px" }}>
+            <span style={{ color: "var(--text-success)" }}>Clean Energy × 2</span>
             {"  +  "}
             <span style={{ color: "#f97316" }}>Fossil Energy × 0.05</span>
           </div>
-          <p style={{ fontSize: "12px", color: "#64748b", lineHeight: 1.65 }}>
+          <p style={{ fontSize: "var(--font-base)", color: "var(--text-muted)", lineHeight: 1.65 }}>
             Fossil fuels earn strong revenue to fund your grid, but score only 1/20th of what clean
             energy does. The winning strategy: use fossil early to afford the transition — then go clean.
           </p>
@@ -394,8 +476,8 @@ function IntroScreen({ onStart }) {
             ["⏱", "10 minutes is not enough to buy everything. Every decision matters."],
           ].map(([icon, text]) => (
             <div key={text} style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-              <span style={{ fontSize: "13px", flexShrink: 0, marginTop: "2px" }}>{icon}</span>
-              <span style={{ fontSize: "12.5px", color: "#94a3b8", lineHeight: 1.55 }}>{text}</span>
+              <span style={{ fontSize: "var(--font-md)", flexShrink: 0, marginTop: "2px" }}>{icon}</span>
+              <span style={{ fontSize: "12.5px", color: "var(--text-secondary)", lineHeight: 1.55 }}>{text}</span>
             </div>
           ))}
         </div>
@@ -404,18 +486,18 @@ function IntroScreen({ onStart }) {
       <button
         onClick={onStart}
         style={{
-          background: "linear-gradient(135deg, #22c55e, #16a34a)",
+          background: "linear-gradient(135deg, var(--color-success), #16a34a)",
           color: "#fff", border: "none", padding: "15px 56px",
-          fontSize: "15px", fontWeight: 700, borderRadius: "6px", cursor: "pointer",
+          fontSize: "var(--font-xl)", fontWeight: 700, borderRadius: "var(--border-radius-md)", cursor: "pointer",
           letterSpacing: "2.5px", textTransform: "uppercase",
-          boxShadow: "0 0 32px rgba(34,197,94,0.38)", transition: "all 0.2s",
+          boxShadow: "var(--glow-success)", transition: "all 0.2s",
         }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
         onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
         ▶  START SIMULATION
       </button>
-      <div className="mono" style={{ marginTop: "14px", fontSize: "11px", color: "#334155" }}>
+      <div className="mono" style={{ marginTop: "14px", fontSize: "var(--font-sm2)", color: "var(--text-dark)" }}>
         STARTING BUDGET: $1,500M · DURATION: 10:00 · TECHNOLOGIES: 7
       </div>
     </div>
@@ -431,55 +513,55 @@ function GameBoard({ d, onBuy }) {
   const timePercent = (d.timeLeft / GAME_DURATION) * 100;
 
   return (
-    <div className="game-container" style={{ display: "flex", flexDirection: "column", background: "#060b16"}}>
+    <div className="game-container" style={{ display: "flex", flexDirection: "column", background: "var(--bg-body)" }}>
 
       {/* ── HEADER ── */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "8px 16px", flexShrink: 0, flexWrap: "wrap", gap: "6px",
-        background: "rgba(6,11,22,0.98)", borderBottom: "1px solid rgba(30,58,95,0.55)",
+        background: "var(--bg-header)", borderBottom: "1px solid var(--border-light)",
       }}>
-        <span style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "2.5px", color: "#3b82f6", flexShrink: 0 }}>
+        <span style={{ fontSize: "var(--font-2xl)", fontWeight: 700, letterSpacing: "2.5px", color: "var(--color-info)", flexShrink: 0 }}>
           ⚡ GRID OPERATOR
         </span>
         <div className="desktop-header-stats" style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
-          <HStat label="SCORE"  value={fmtNum(d.score)}          color="#22c55e" glow />
-          <HStat label="BUDGET" value={fmt$(d.money)}             color="#fbbf24" />
-          <HStat label="REV/S"  value={`+${fmt$(d.rev)}`}        color="#94a3b8" />
-          <HStat label="POWER"  value={`${Math.round(d.total)} u/s`} color="#7dd3fc" />
+          <HStat label="SCORE"  value={fmtNum(d.score)}          color="var(--text-success)" glow />
+          <HStat label="BUDGET" value={fmt$(d.money)}             color="var(--text-warning)" />
+          <HStat label="REV/S"  value={`+${fmt$(d.rev)}`}        color="var(--text-secondary)" />
+          <HStat label="POWER"  value={`${Math.round(d.total)} u/s`} color="var(--text-info)" />
         </div>
         <div
           className={`mono ${urgent ? "glow-red" : ""}`}
-          style={{ fontSize: "22px", color: urgent ? "#ef4444" : "#e2e8f0", minWidth: "68px", textAlign: "right" }}
+          style={{ fontSize: "var(--font-2xl)", color: urgent ? "var(--color-danger)" : "var(--text-primary)", minWidth: "68px", textAlign: "right" }}
         >
           {fmtTime(d.timeLeft)}
         </div>
       </div>
 
       {/* ── TIMER BAR ── */}
-      <div style={{ height: "3px", background: "#0e1525", flexShrink: 0 }}>
+      <div style={{ height: "3px", background: "var(--bg-progress)", flexShrink: 0 }}>
         <div
           className="timer-bar"
           style={{
             height: "100%", width: `${timePercent}%`,
-            background: urgent ? "linear-gradient(90deg, #ef4444, #f97316)" : "linear-gradient(90deg, #22c55e, #3b82f6)",
-            boxShadow: urgent ? "0 0 8px #ef4444" : "0 0 6px #22c55e55",
+            background: urgent ? "linear-gradient(90deg, var(--color-danger), #f97316)" : "linear-gradient(90deg, var(--color-success), var(--color-info))",
+            boxShadow: urgent ? "0 0 8px var(--color-danger)" : "0 0 6px #22c55e55",
           }}
         />
       </div>
 
       {/* ── MOBILE TABS ── */}
-      <div className="mobile-tabs" style={{ gap: "0", flexShrink: 0, borderBottom: "1px solid rgba(30,58,95,0.4)" }}>
+      <div className="mobile-tabs" style={{ gap: "0", flexShrink: 0, borderBottom: "1px solid var(--border-tab)" }}>
         {[["grid", "📊 Grid"], ["market", "🛒 Market"]].map(([tab, label]) => (
           <button
             key={tab}
             onClick={() => setMobileTab(tab)}
             style={{
               flex: 1, padding: "8px", border: "none", cursor: "pointer",
-              background: mobileTab === tab ? "rgba(30,58,95,0.5)" : "transparent",
-              color: mobileTab === tab ? "#e2e8f0" : "#64748b",
-              fontFamily: "inherit", fontSize: "12px", fontWeight: 600,
-              borderBottom: mobileTab === tab ? "2px solid #3b82f6" : "2px solid transparent",
+              background: mobileTab === tab ? "var(--bg-tab-active)" : "var(--bg-tab-inactive)",
+              color: mobileTab === tab ? "var(--text-primary)" : "var(--text-muted)",
+              fontFamily: "inherit", fontSize: "var(--font-base)", fontWeight: 600,
+              borderBottom: mobileTab === tab ? "2px solid var(--color-info)" : "2px solid transparent",
             }}
           >
             {label}
@@ -498,7 +580,6 @@ function GameBoard({ d, onBuy }) {
             <GridStatus d={d} />
             <PlantsList d={d} />
           </div>
-          {/* On desktop always show */}
           <style>{`.left-panel .mobile-grid-show { display: contents !important; } @media (max-width:700px) { .left-panel .mobile-grid-show { display: ${mobileTab === "grid" ? "contents" : "none"} !important; } }`}</style>
         </div>
 
@@ -515,8 +596,8 @@ function GameBoard({ d, onBuy }) {
 function HStat({ label, value, color, glow }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: "8px", letterSpacing: "1.5px", color: "#475569", textTransform: "uppercase" }}>{label}</div>
-      <div className={`mono ${glow ? "glow-green" : ""}`} style={{ fontSize: "14px", color }}>{value}</div>
+      <div style={{ fontSize: "var(--font-xxs2)", letterSpacing: "1.5px", color: "var(--text-dim)", textTransform: "uppercase" }}>{label}</div>
+      <div className={`mono ${glow ? "glow-green" : ""}`} style={{ fontSize: "var(--font-lg)", color }}>{value}</div>
     </div>
   );
 }
@@ -527,22 +608,22 @@ function HStat({ label, value, color, glow }) {
 function GridStatus({ d }) {
   const { total, clean, greenFrac, byType, elapsed, bat, cleanAcc, dirtyAcc, score } = d;
   const greenPct  = Math.round(greenFrac * 100);
-  const envColor  = greenFrac > 0.65 ? "#22c55e" : greenFrac > 0.35 ? "#fbbf24" : "#ef4444";
+  const envColor  = greenFrac > 0.65 ? "var(--text-success)" : greenFrac > 0.35 ? "var(--text-warning)" : "var(--color-danger)";
   const isDaytime = getSolarFactor(elapsed) > 0.05;
   const windLevel = getWindFactor(elapsed);
 
   return (
-    <div style={{ padding: "10px", borderBottom: "1px solid rgba(30,58,95,0.4)", flexShrink: 0 }}>
-      <div style={{ fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase", color: "#3b82f6", marginBottom: "9px" }}>
+    <div style={{ padding: "var(--panel-padding)", borderBottom: "1px solid var(--border-lighter)", flexShrink: 0 }}>
+      <div style={{ fontSize: "var(--font-xs)", letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--color-info)", marginBottom: "9px" }}>
         GRID STATUS
       </div>
 
       {/* Power mix bar */}
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "#64748b", marginBottom: "3px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-sm)", color: "var(--text-muted)", marginBottom: "3px" }}>
         <span>Power Mix</span>
         <span className="mono" style={{ color: envColor }}>{greenPct}% clean</span>
       </div>
-      <div style={{ height: "7px", borderRadius: "4px", background: "#0e1525", overflow: "hidden", marginBottom: "10px", display: "flex" }}>
+      <div style={{ height: "7px", borderRadius: "var(--border-radius)", background: "var(--bg-progress)", overflow: "hidden", marginBottom: "10px", display: "flex" }}>
         {ORDERED.filter((t) => t !== "battery" && byType[t] > 0).map((t) => (
           <div
             key={t}
@@ -554,35 +635,35 @@ function GridStatus({ d }) {
 
       {/* Score rows */}
       <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-        <SRow label="Total Power"     value={`${Math.round(total)} u/s`}            color="#7dd3fc" />
-        <SRow label="🌿 Clean score"  value={`+${fmtNum(Math.round(cleanAcc * 2))}`} color="#22c55e" />
+        <SRow label="Total Power"     value={`${Math.round(total)} u/s`}            color="var(--text-info)" />
+        <SRow label="🌿 Clean score"  value={`+${fmtNum(Math.round(cleanAcc * 2))}`} color="var(--text-success)" />
         <SRow label="🏭 Fossil score" value={`+${fmtNum(Math.round(dirtyAcc * 0.05))}`} color="#f97316" />
-        <div style={{ borderTop: "1px solid rgba(30,58,95,0.35)", paddingTop: "4px", marginTop: "2px" }}>
-          <SRow label="TOTAL SCORE" value={fmtNum(score)} color="#e2e8f0" bold />
+        <div style={{ borderTop: "1px solid var(--border-lighter)", paddingTop: "4px", marginTop: "2px" }}>
+          <SRow label="TOTAL SCORE" value={fmtNum(score)} color="var(--text-primary)" bold />
         </div>
       </div>
 
       {/* Intermittency meters */}
       {(d.active.solar > 0 || d.active.wind > 0) && (
-        <div style={{ marginTop: "9px", borderTop: "1px solid rgba(30,58,95,0.3)", paddingTop: "9px", display: "flex", flexDirection: "column", gap: "5px" }}>
+        <div style={{ marginTop: "9px", borderTop: "1px solid var(--border-lighter)", paddingTop: "9px", display: "flex", flexDirection: "column", gap: "5px" }}>
           {d.active.solar > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "10px", color: "#64748b" }}>
+              <span style={{ fontSize: "var(--font-sm)", color: "var(--text-muted)" }}>
                 {isDaytime ? "☀️" : "🌙"} Solar cap.
               </span>
-              <CapBar value={getCapFactor("solar", elapsed, bat)} color="#fbbf24" />
+              <CapBar value={getCapFactor("solar", elapsed, bat)} color="var(--text-warning)" />
             </div>
           )}
           {d.active.wind > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: "10px", color: "#64748b" }}>
+              <span style={{ fontSize: "var(--font-sm)", color: "var(--text-muted)" }}>
                 {windLevel > 0.6 ? "💨" : windLevel > 0.35 ? "🌬️" : "🍃"} Wind cap.
               </span>
-              <CapBar value={getCapFactor("wind", elapsed, bat)} color="#7dd3fc" />
+              <CapBar value={getCapFactor("wind", elapsed, bat)} color="var(--text-info)" />
             </div>
           )}
           {bat > 0 && (
-            <div style={{ fontSize: "10px", color: "#a78bfa" }}>
+            <div style={{ fontSize: "var(--font-sm)", color: "#a78bfa" }}>
               🔋 {bat} battery bank{bat > 1 ? "s" : ""} active
             </div>
           )}
@@ -591,8 +672,8 @@ function GridStatus({ d }) {
 
       {/* Fossil warning */}
       {d.active.fossil >= 4 && (
-        <div style={{ marginTop: "9px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: "4px", padding: "6px 8px" }}>
-          <div style={{ fontSize: "10px", color: "#fca5a5", lineHeight: 1.5 }}>
+        <div style={{ marginTop: "9px", background: "var(--bg-warning)", border: "1px solid var(--border-warning)", borderRadius: "var(--border-radius)", padding: "6px 8px" }}>
+          <div style={{ fontSize: "var(--font-sm)", color: "#fca5a5", lineHeight: 1.5 }}>
             ⚠️ Heavy fossil dependency. Your score multiplier for fossil is only 0.05×. Invest in clean energy!
           </div>
         </div>
@@ -604,8 +685,8 @@ function GridStatus({ d }) {
 function SRow({ label, value, color, bold }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-      <span style={{ fontSize: "10px", color: "#64748b", fontWeight: bold ? 600 : 400 }}>{label}</span>
-      <span className="mono" style={{ fontSize: bold ? "12px" : "11px", color, fontWeight: bold ? 700 : 400 }}>{value}</span>
+      <span style={{ fontSize: "var(--font-sm)", color: "var(--text-muted)", fontWeight: bold ? 600 : 400 }}>{label}</span>
+      <span className="mono" style={{ fontSize: bold ? "var(--font-base)" : "var(--font-sm2)", color, fontWeight: bold ? 700 : 400 }}>{value}</span>
     </div>
   );
 }
@@ -614,10 +695,10 @@ function CapBar({ value, color }) {
   const pct = Math.round(Math.min(1, Math.max(0, value)) * 100);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-      <div style={{ width: "52px", height: "5px", background: "#0e1525", borderRadius: "3px", overflow: "hidden" }}>
+      <div style={{ width: "52px", height: "5px", background: "var(--bg-progress)", borderRadius: "var(--border-radius-sm)", overflow: "hidden" }}>
         <div className="bar-fill" style={{ width: `${pct}%`, height: "100%", background: color }} />
       </div>
-      <span className="mono" style={{ fontSize: "10px", color, minWidth: "28px" }}>{pct}%</span>
+      <span className="mono" style={{ fontSize: "var(--font-sm)", color, minWidth: "28px" }}>{pct}%</span>
     </div>
   );
 }
@@ -631,13 +712,13 @@ function PlantsList({ d }) {
   const recent   = plants.filter((p) => p.completedAt && elapsed - p.completedAt < 4);
 
   return (
-    <div style={{ flex: 1, overflowY: "auto", padding: "10px" }}>
-      <div style={{ fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase", color: "#3b82f6", marginBottom: "8px" }}>
+    <div style={{ flex: 1, overflowY: "auto", padding: "var(--panel-padding)" }}>
+      <div style={{ fontSize: "var(--font-xs)", letterSpacing: "2.5px", textTransform: "uppercase", color: "var(--color-info)", marginBottom: "8px" }}>
         YOUR PLANTS
       </div>
 
       {plants.length === 0 && (
-        <div style={{ color: "#334155", fontSize: "12px", textAlign: "center", paddingTop: "18px" }}>
+        <div style={{ color: "var(--text-dark)", fontSize: "var(--font-base)", textAlign: "center", paddingTop: "18px" }}>
           No plants yet.<br />Buy something →
         </div>
       )}
@@ -657,19 +738,19 @@ function PlantsList({ d }) {
             style={{
               display: "flex", alignItems: "center", gap: "7px",
               padding: "5px 7px", marginBottom: "4px",
-              background: isNew ? `${src.color}18` : "rgba(14,21,37,0.6)",
-              borderRadius: "4px", borderLeft: `2px solid ${src.color}`,
+              background: isNew ? `${src.color}18` : "var(--bg-plant-item)",
+              borderRadius: "var(--border-radius)", borderLeft: `2px solid ${src.color}`,
               transition: "background 0.5s",
             }}
           >
-            <span style={{ fontSize: "15px", flexShrink: 0 }}>{src.emoji}</span>
+            <span style={{ fontSize: "var(--font-xl)", flexShrink: 0 }}>{src.emoji}</span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: "11px", fontWeight: 600, color: "#cbd5e1", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <div style={{ fontSize: "var(--font-sm2)", fontWeight: 600, color: "var(--text-secondary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {n}× {src.name}
               </div>
-              <div className="mono" style={{ fontSize: "10px", color: src.color }}>
+              <div className="mono" style={{ fontSize: "var(--font-sm)", color: src.color }}>
                 {Math.round(pw)} u/s
-                {src.intermittent && <span style={{ color: "#475569" }}> ({Math.round(cap * 100)}%)</span>}
+                {src.intermittent && <span style={{ color: "var(--text-dim)" }}> ({Math.round(cap * 100)}%)</span>}
               </div>
             </div>
           </div>
@@ -679,7 +760,7 @@ function PlantsList({ d }) {
       {/* Build queue */}
       {building.length > 0 && (
         <div style={{ marginTop: "10px" }}>
-          <div style={{ fontSize: "9px", letterSpacing: "1.5px", color: "#475569", textTransform: "uppercase", marginBottom: "5px" }}>
+          <div style={{ fontSize: "var(--font-xs)", letterSpacing: "1.5px", color: "var(--text-dim)", textTransform: "uppercase", marginBottom: "5px" }}>
             UNDER CONSTRUCTION
           </div>
           {building.map((p) => {
@@ -688,17 +769,17 @@ function PlantsList({ d }) {
             return (
               <div
                 key={p.id}
-                style={{ marginBottom: "5px", padding: "6px 8px", background: "rgba(14,21,37,0.7)", borderRadius: "4px", border: `1px solid ${src.color}33` }}
+                style={{ marginBottom: "5px", padding: "6px 8px", background: "var(--bg-queue)", borderRadius: "var(--border-radius)", border: `1px solid ${src.color}33` }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-                  <span className="pulse" style={{ fontSize: "12px", color: src.color }}>
+                  <span className="pulse" style={{ fontSize: "var(--font-base)", color: src.color }}>
                     {src.emoji} {src.name}
                   </span>
-                  <span className="mono" style={{ fontSize: "10px", color: "#64748b" }}>
+                  <span className="mono" style={{ fontSize: "var(--font-sm)", color: "var(--text-muted)" }}>
                     {fmtTime(p.buildLeft)}
                   </span>
                 </div>
-                <div style={{ height: "3px", background: "#0e1525", borderRadius: "2px", overflow: "hidden" }}>
+                <div style={{ height: "3px", background: "var(--bg-progress)", borderRadius: "var(--border-radius-sm)", overflow: "hidden" }}>
                   <div
                     className="bar-fill"
                     style={{ width: `${progress * 100}%`, height: "100%", background: src.color, boxShadow: `0 0 5px ${src.color}` }}
@@ -756,34 +837,34 @@ function ShopCard({ type, d, onBuy }) {
           {/* Name row */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "6px", marginBottom: "2px" }}>
             <div>
-              <div style={{ fontSize: "14px", fontWeight: 700, color: src.color }}>{src.name}</div>
-              <div style={{ fontSize: "10px", color: "#475569" }}>{src.sub}</div>
+              <div style={{ fontSize: "var(--font-lg)", fontWeight: 700, color: src.color }}>{src.name}</div>
+              <div style={{ fontSize: "var(--font-sm)", color: "var(--text-dim)" }}>{src.sub}</div>
             </div>
             {owned > 0 && (
               <div style={{ textAlign: "right", flexShrink: 0 }}>
-                <div className="mono" style={{ fontSize: "11px", color: src.color }}>{activeN} active</div>
+                <div className="mono" style={{ fontSize: "var(--font-sm2)", color: src.color }}>{activeN} active</div>
                 {inQueue > 0 && (
-                  <div className="mono pulse" style={{ fontSize: "10px", color: "#64748b" }}>{inQueue} building</div>
+                  <div className="mono pulse" style={{ fontSize: "var(--font-sm)", color: "var(--text-muted)" }}>{inQueue} building</div>
                 )}
               </div>
             )}
           </div>
 
           {/* Description */}
-          <p style={{ fontSize: "11px", color: "#64748b", lineHeight: 1.5, marginBottom: "8px" }}>{src.desc}</p>
+          <p style={{ fontSize: "var(--font-sm2)", color: "var(--text-muted)", lineHeight: 1.5, marginBottom: "8px" }}>{src.desc}</p>
 
           {/* Stats + buy */}
           <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
-            {src.outputPerSec > 0 && <Chip label="Output" value={`${src.outputPerSec} u/s`} color="#7dd3fc" />}
-            <Chip label="Build"  value={src.buildSec >= 60 ? `${src.buildSec / 60}m` : `${src.buildSec}s`} color="#94a3b8" />
-            {src.revPerSec > 0 && <Chip label="Rev/s"  value={`+${fmt$(src.revPerSec)}`} color="#fbbf24" />}
-            {src.maxOwned && <Chip label="Sites" value={`${owned}/${src.maxOwned}`} color={maxed ? "#ef4444" : "#22c55e"} />}
-            {src.intermittent && <Chip label="Cap" value={`${Math.round(cap * 100)}%`} color={cap > 0.55 ? "#22c55e" : "#fbbf24"} />}
+            {src.outputPerSec > 0 && <Chip label="Output" value={`${src.outputPerSec} u/s`} color="var(--text-info)" />}
+            <Chip label="Build"  value={src.buildSec >= 60 ? `${src.buildSec / 60}m` : `${src.buildSec}s`} color="var(--text-secondary)" />
+            {src.revPerSec > 0 && <Chip label="Rev/s"  value={`+${fmt$(src.revPerSec)}`} color="var(--text-warning)" />}
+            {src.maxOwned && <Chip label="Sites" value={`${owned}/${src.maxOwned}`} color={maxed ? "var(--color-danger)" : "var(--text-success)"} />}
+            {src.intermittent && <Chip label="Cap" value={`${Math.round(cap * 100)}%`} color={cap > 0.55 ? "var(--text-success)" : "var(--text-warning)"} />}
 
             {/* Env tag */}
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: "42px" }}>
-              <span style={{ fontSize: "7.5px", color: "#475569", textTransform: "uppercase", letterSpacing: "0.5px" }}>Env</span>
-              <span style={{ fontSize: "10px", fontWeight: 700, color: src.envColor }}>{src.envTag}</span>
+              <span style={{ fontSize: "var(--font-xxs)", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Env</span>
+              <span style={{ fontSize: "var(--font-sm)", fontWeight: 700, color: src.envColor }}>{src.envTag}</span>
             </div>
 
             {/* Buy button */}
@@ -796,7 +877,7 @@ function ShopCard({ type, d, onBuy }) {
                   background: canAfford && !maxed
                     ? `linear-gradient(135deg, ${src.color}, ${src.color}cc)`
                     : "#1e293b",
-                  color: canAfford && !maxed ? "#000" : "#475569",
+                  color: canAfford && !maxed ? "#000" : "var(--text-dim)",
                 }}
               >
                 {maxed ? "MAXED" : `${fmt$(cost)}`}
@@ -806,7 +887,7 @@ function ShopCard({ type, d, onBuy }) {
 
           {/* Real-world fact (shown when owned) */}
           {owned > 0 && (
-            <div style={{ marginTop: "6px", fontSize: "10px", color: "#334155", fontStyle: "italic", borderTop: "1px solid rgba(30,58,95,0.3)", paddingTop: "5px" }}>
+            <div style={{ marginTop: "6px", fontSize: "var(--font-sm)", color: "var(--text-dark)", fontStyle: "italic", borderTop: "1px solid var(--border-lighter)", paddingTop: "5px" }}>
               💡 {src.fact}
             </div>
           )}
@@ -819,8 +900,8 @@ function ShopCard({ type, d, onBuy }) {
 function Chip({ label, value, color }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: "36px" }}>
-      <span style={{ fontSize: "7.5px", color: "#475569", textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
-      <span className="mono" style={{ fontSize: "11px", color }}>{value}</span>
+      <span style={{ fontSize: "var(--font-xxs)", color: "var(--text-dim)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</span>
+      <span className="mono" style={{ fontSize: "var(--font-sm2)", color }}>{value}</span>
     </div>
   );
 }
@@ -837,7 +918,7 @@ function EndScreen({ d, onRestart }) {
               score > 250000 ? "A" :
               score > 100000 ? "B" :
               score > 40000  ? "C" : "D";
-  const gradeColor = { S: "#22c55e", A: "#a3e635", B: "#fbbf24", C: "#f97316", D: "#ef4444" }[grade];
+  const gradeColor = { S: "var(--text-success)", A: "#a3e635", B: "var(--text-warning)", C: "#f97316", D: "var(--color-danger)" }[grade];
   const gradeMsg = {
     S: "Outstanding grid operator. Exceptional clean output and smart financing.",
     A: "Great work — your grid is clean, efficient, and highly productive.",
@@ -854,27 +935,27 @@ function EndScreen({ d, onRestart }) {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#060b16", display: "flex", flexDirection: "column",
+      minHeight: "100vh", background: "var(--bg-body)", display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", padding: "28px 20px", textAlign: "center",
       backgroundImage: "radial-gradient(ellipse at 50% 50%, rgba(34,197,94,0.07) 0%, transparent 70%)",
     }}>
-      <div className="mono" style={{ fontSize: "10px", letterSpacing: "4px", color: "#3b82f6", marginBottom: "14px" }}>
+      <div className="mono" style={{ fontSize: "var(--font-sm)", letterSpacing: "4px", color: "var(--color-info)", marginBottom: "14px" }}>
         SIMULATION COMPLETE
       </div>
-      <h1 style={{ fontSize: "clamp(1.6rem, 5vw, 3rem)", fontWeight: 800, marginBottom: "8px" }}>
+      <h1 style={{ fontSize: "var(--font-heading)", fontWeight: 800, marginBottom: "8px" }}>
         FINAL SCORE:{" "}
-        <span className="mono glow-green" style={{ color: "#22c55e" }}>
+        <span className="mono glow-green" style={{ color: "var(--text-success)" }}>
           {fmtNum(score)}
         </span>
       </h1>
 
       <div style={{
-        fontSize: "clamp(3.5rem, 12vw, 7rem)", fontWeight: 800, lineHeight: 1,
+        fontSize: "var(--font-grade)", fontWeight: 800, lineHeight: 1,
         color: gradeColor, textShadow: `0 0 40px ${gradeColor}77`, marginBottom: "8px",
       }}>
         {grade}
       </div>
-      <p style={{ color: "#64748b", fontSize: "14px", maxWidth: "420px", lineHeight: 1.7, marginBottom: "28px" }}>
+      <p style={{ color: "var(--text-muted)", fontSize: "var(--font-lg)", maxWidth: "420px", lineHeight: 1.7, marginBottom: "28px" }}>
         {gradeMsg}
       </p>
 
@@ -882,10 +963,10 @@ function EndScreen({ d, onRestart }) {
       <div className="panel" style={{ maxWidth: "430px", width: "100%", marginBottom: "14px", textAlign: "left" }}>
         <div className="panel-title">Score Breakdown</div>
         <div style={{ padding: "14px 18px", display: "flex", flexDirection: "column", gap: "9px" }}>
-          <ERow label="🌿 Clean energy produced" formula={`${fmtNum(Math.round(cleanAcc))} × 2`} value={cleanScore}    color="#22c55e" />
+          <ERow label="🌿 Clean energy produced" formula={`${fmtNum(Math.round(cleanAcc))} × 2`} value={cleanScore}    color="var(--text-success)" />
           <ERow label="🏭 Fossil energy produced" formula={`${fmtNum(Math.round(dirtyAcc))} × 0.05`} value={dirtyScore} color="#f97316" />
-          <div style={{ borderTop: "1px solid rgba(30,58,95,0.4)", paddingTop: "9px" }}>
-            <ERow label="TOTAL" formula="" value={score} color="#e2e8f0" bold />
+          <div style={{ borderTop: "1px solid var(--border-lighter)", paddingTop: "9px" }}>
+            <ERow label="TOTAL" formula="" value={score} color="var(--text-primary)" bold />
           </div>
         </div>
       </div>
@@ -895,7 +976,7 @@ function EndScreen({ d, onRestart }) {
         <div className="panel-title">Your Portfolio ({plants.length} plants built · {greenPct}% clean at end)</div>
         <div style={{ padding: "12px 16px", display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {plants.length === 0 ? (
-            <span style={{ fontSize: "12px", color: "#475569" }}>No plants built.</span>
+            <span style={{ fontSize: "var(--font-base)", color: "var(--text-dim)" }}>No plants built.</span>
           ) : (
             ORDERED.map((t) => {
               if (!finalCounts[t]) return null;
@@ -909,8 +990,8 @@ function EndScreen({ d, onRestart }) {
                     borderRadius: "20px", padding: "4px 11px",
                   }}
                 >
-                  <span style={{ fontSize: "13px" }}>{src.emoji}</span>
-                  <span style={{ fontSize: "12px", color: src.color, fontWeight: 600 }}>
+                  <span style={{ fontSize: "var(--font-md)" }}>{src.emoji}</span>
+                  <span style={{ fontSize: "var(--font-base)", color: src.color, fontWeight: 600 }}>
                     {finalCounts[t]}× {src.name}
                   </span>
                 </div>
@@ -924,17 +1005,17 @@ function EndScreen({ d, onRestart }) {
         <button
           onClick={onRestart}
           style={{
-            background: "linear-gradient(135deg, #3b82f6, #1d4ed8)", color: "#fff",
-            border: "none", padding: "13px 40px", fontSize: "13px", fontWeight: 700,
-            borderRadius: "6px", cursor: "pointer", letterSpacing: "2px", textTransform: "uppercase",
+            background: "linear-gradient(135deg, var(--color-info), #1d4ed8)", color: "#fff",
+            border: "none", padding: "13px 40px", fontSize: "var(--font-md)", fontWeight: 700,
+            borderRadius: "var(--border-radius-md)", cursor: "pointer", letterSpacing: "2px", textTransform: "uppercase",
           }}
         >
           ↺ PLAY AGAIN
         </button>
       </div>
 
-      <div style={{ marginTop: "28px", maxWidth: "480px", fontSize: "12px", color: "#334155", lineHeight: 1.7 }}>
-        <strong style={{ color: "#475569" }}>Reflection:</strong> The optimal strategy mirrors real-world energy policy —
+      <div style={{ marginTop: "28px", maxWidth: "480px", fontSize: "var(--font-base)", color: "var(--text-dark)", lineHeight: 1.7 }}>
+        <strong style={{ color: "var(--text-dim)" }}>Reflection:</strong> The optimal strategy mirrors real-world energy policy —
         fossil fuels provide cheap capital to bootstrap the transition, but long-term success requires committing
         to clean sources despite their higher upfront cost and intermittency challenges.
       </div>
@@ -946,12 +1027,12 @@ function ERow({ label, formula, value, color, bold }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
       <div>
-        <span style={{ fontSize: "13px", color: "#94a3b8", fontWeight: bold ? 700 : 400 }}>{label}</span>
+        <span style={{ fontSize: "var(--font-md)", color: "var(--text-secondary)", fontWeight: bold ? 700 : 400 }}>{label}</span>
         {formula && (
-          <span className="mono" style={{ fontSize: "10px", color: "#334155", marginLeft: "6px" }}>({formula})</span>
+          <span className="mono" style={{ fontSize: "var(--font-sm)", color: "var(--text-dark)", marginLeft: "6px" }}>({formula})</span>
         )}
       </div>
-      <span className="mono" style={{ fontSize: bold ? "15px" : "13px", color, fontWeight: bold ? 700 : 400 }}>
+      <span className="mono" style={{ fontSize: bold ? "var(--font-xl)" : "var(--font-md)", color, fontWeight: bold ? 700 : 400 }}>
         {fmtNum(value)}
       </span>
     </div>
